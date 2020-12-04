@@ -1,0 +1,20 @@
+title Fullstack MOOC OSA 0 t5
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+palvelin->selain: 304 HTML-koodi
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+palvelin->selain: 304 main.css
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+palvelin->selain: 304 spa.js
+
+note over selain:
+selain ajaa javascript koodin, joka pyytää data.json tiedoston.
+end note:
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+palvelin-> selain: 200 [{"content":"9","date":"2020-12-02T02:13:48.054Z"...
+
+note over selain: 
+selain ajaa tapahtumankäsittelijän joka renderöi data.json tiedoston 
+sisällön sivulle.
+

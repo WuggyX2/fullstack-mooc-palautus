@@ -1,0 +1,11 @@
+title Fullstack MOOC OSA 0 t6
+
+note over selain:
+Käyttäjä kirjoittaa tekstin kenttään ja painaa Save painiketta.
+Selain ajaa tapahtumankäsittelijän, joka lisää viestin notes taulukkoon,
+merkitsee lomakkeen tyhjäksi ja uudelleen renderöi notes taulukon sekä
+lähettää uuden viestin palvelimelle.
+end note:
+
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+palvelin->selain: 201 {"message":"note created"}
