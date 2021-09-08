@@ -25,6 +25,10 @@ function App() {
 		setSearchString(event.target.value);
 	};
 
+	const handleCountryListButtonCLick = (event) => {
+		setSearchString(event.target.value);
+	};
+
 	return (
 		<div>
 			<Search
@@ -34,6 +38,7 @@ function App() {
 			<CountryList
 				countries={countriesToShow}
 				searchTerm={searchString}
+				buttonClickHandler={handleCountryListButtonCLick}
 			/>
 			<Country
 				countries={countriesToShow}
