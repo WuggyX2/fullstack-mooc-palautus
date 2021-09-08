@@ -1,5 +1,5 @@
 export const CountryList = ({ countries, searchTerm }) => {
-	if (searchTerm) {
+	if (searchTerm && countries.length !== 1) {
 		if (countries.length < 10) {
 			return (
 				<div>
