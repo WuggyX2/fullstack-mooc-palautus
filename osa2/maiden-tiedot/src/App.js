@@ -1,8 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import Country from "./components/Country";
-import { CountryList } from "./components/CountryList";
-import Search from "./components/Search";
+import { Country, CountryList, Search } from "./components/index";
 
 function App() {
 	const [countries, setCountries] = useState([]);
