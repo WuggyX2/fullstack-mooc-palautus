@@ -6,13 +6,13 @@ const config = require("./utils/config");
 const mongoose = require("mongoose");
 console.log(config.MONGODB_URI);
 mongoose
-  .connect(config.MONGODB_URI)
-  .then(() => {
-    console.log("connected to MongoDB");
-  })
-  .catch((error) => {
-    console.error(`error connection to MongoDB: ${error.message}`);
-  });
+    .connect(config.MONGODB_URI)
+    .then(() => {
+        console.log("connected to MongoDB");
+    })
+    .catch((error) => {
+        console.error(`error connection to MongoDB: ${error.message}`);
+    });
 
 app.use(cors());
 app.use(express.json());
