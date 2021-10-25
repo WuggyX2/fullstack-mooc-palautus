@@ -1,3 +1,5 @@
+var collection = require("lodash/collection");
+
 const dummy = (blogs) => {
     return 1;
 };
@@ -18,8 +20,44 @@ const favoriteBlog = (blogs) => {
     }
 };
 
+const mostBlogs = (blogs) => {
+    const groupedBlogs = collection.groupBy(blogs, (blog) => {
+        return blog.author;
+    });
+
+    return Object.entries(groupedBlogs).reduce(
+        (max, [key, val]) => {
+            return val.length < max.blogs
+                ? max
+                : { author: key, blogs: val.length };
+        },
+        { author: "", blogs: 0 }
+    );
+};
+
+const mostLikes = (blogs) => {
+    const groupedBlogs = collection.groupBy(blogs, (blog) => {
+        return blog.author;
+    });
+
+    return Object.entries(groupedBlogs).reduce(
+        (max, [key, val]) => {
+            const likeAmount = val.reduce((previous, current) => {
+                return previous + current.likes;
+            }, 0);
+
+            return likeAmount < max.likes
+                ? max
+                : { author: key, likes: likeAmount };
+        },
+        { author: "", likes: 0 }
+    );
+};
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs,
+    mostLikes
 };
