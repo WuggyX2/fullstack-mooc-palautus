@@ -42,6 +42,23 @@ describe("test get blogs api", () => {
     });
 });
 
+describe("test post blogs api", () => {
+    test("blogs are added to the database", async () => {
+        const testBlog = {
+            title: "testi 123",
+            author: "testi testinen",
+            url: "https://www.google.fi/",
+            likes: 1
+        };
+        const response = await api.post("/api/blogs").send(testBlog);
+        const finalBlogs = await api.get("/api/blogs");
+
+        expect(response.statusCode).toBe(201);
+        expect(finalBlogs.body.length).toBe(3);
+        expect(response.body.title).toBe("testi 123");
+    });
+});
+
 afterAll(() => {
     mongoose.connection.close();
 });
