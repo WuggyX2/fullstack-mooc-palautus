@@ -92,6 +92,75 @@ describe("test post blogs api", () => {
     });
 });
 
+describe("test blog delete api", () => {
+    test("test delete positive", async () => {
+        const testBlogs = await api.get("/api/blogs");
+
+        const deleteResult = await api.delete(
+            `/api/blogs/${testBlogs.body[0].id}`
+        );
+
+        const remainingBlogs = await api.get("/api/blogs");
+        expect(deleteResult.statusCode).toBe(200);
+        expect(remainingBlogs.body.length).toBe(1);
+    });
+
+    test("test delete person not found", async () => {
+        const deleteResult = await api.delete(`/api/blogs/123`);
+        expect(deleteResult.statusCode).toBe(400);
+    });
+});
+
+describe("test blogs api patch", () => {
+    test("Update likes success", async () => {
+        const testBlogs = await api.get("/api/blogs");
+
+        const updatedBlog = { likes: 3 };
+        const updateResult = await api
+            .patch(`/api/blogs/${testBlogs.body[0].id}`)
+            .send(updatedBlog);
+
+        const result = await api.get("/api/blogs");
+        expect(updateResult.statusCode).toBe(200);
+        expect(result.body[0].likes).toBe(3);
+    });
+
+    test("Invalid id failure", async () => {
+        const updatedBlog = { likes: 3 };
+        const updateResult = await api
+            .patch(`/api/blogs/123`)
+            .send(updatedBlog);
+
+        expect(updateResult.statusCode).toBe(400);
+    });
+
+    test("Update title success", async () => {
+        const testBlogs = await api.get("/api/blogs");
+
+        const updatedBlog = { title: "Päivitys testaus" };
+        const updateResult = await api
+            .patch(`/api/blogs/${testBlogs.body[0].id}`)
+            .send(updatedBlog);
+
+        const result = await api.get("/api/blogs");
+        expect(updateResult.statusCode).toBe(200);
+        expect(result.body[0].title).toBe("Päivitys testaus");
+    });
+
+    test("Update url success", async () => {
+        const testBlogs = await api.get("/api/blogs");
+
+        const updatedBlog = { url: "https://salesforce.com" };
+        const updateResult = await api
+            .patch(`/api/blogs/${testBlogs.body[0].id}`)
+            .send(updatedBlog);
+
+        const result = await api.get("/api/blogs");
+        expect(updateResult.statusCode).toBe(200);
+        expect(result.body[0].url).toBe("https://salesforce.com");
+    });
+});
+
 afterAll(() => {
     mongoose.connection.close();
 });
