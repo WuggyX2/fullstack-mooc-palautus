@@ -57,6 +57,39 @@ describe("test post blogs api", () => {
         expect(finalBlogs.body.length).toBe(3);
         expect(response.body.title).toBe("testi 123");
     });
+
+    test("blog likes is set to 0 when not defined", async () => {
+        const testBlog = {
+            title: "testi 123",
+            author: "testi testinen",
+            url: "https://www.google.fi/"
+        };
+
+        const response = await api.post("/api/blogs").send(testBlog);
+        expect(response.statusCode).toBe(201);
+        expect(response.body.title).toBe("testi 123");
+        expect(response.body.likes).toBe(0);
+    });
+
+    test("return 400 bad request when title is not filled", async () => {
+        const testBlog = {
+            author: "testi testinen",
+            url: "https://www.google.fi/"
+        };
+
+        const response = await api.post("/api/blogs").send(testBlog);
+        expect(response.statusCode).toBe(400);
+    });
+
+    test("return 400 bad request when url is not filled", async () => {
+        const testBlog = {
+            title: "tämä on test",
+            author: "testi testinen"
+        };
+
+        const response = await api.post("/api/blogs").send(testBlog);
+        expect(response.statusCode).toBe(400);
+    });
 });
 
 afterAll(() => {
