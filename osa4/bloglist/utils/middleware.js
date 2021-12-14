@@ -11,4 +11,17 @@ const idValidation = (request, response, next) => {
     }
 };
 
-module.exports = { idValidation };
+const errorHandler = (error, request, response, next) => {
+    if (error.name === "ValidationError") {
+        if (error.errors.username.kind === "unique") {
+            return response.status(400).send({
+                error: `A user with the username ${error.errors.username.value} already exists`
+            });
+        }
+        return response.status(400).send({ error: error.message });
+    }
+
+    next(error);
+};
+
+module.exports = { idValidation, errorHandler };
