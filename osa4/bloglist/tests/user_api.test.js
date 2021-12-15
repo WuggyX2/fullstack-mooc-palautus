@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
-const { response } = require("../app");
 const app = require("../app");
 const User = require("../models/user");
 const api = supertest(app);
@@ -74,6 +73,6 @@ describe("test post users api", () => {
     });
 });
 
-afterAll(async () => {
-    await mongoose.connection.close();
+afterAll(() => {
+    mongoose.connection.close();
 });

@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
-const { response } = require("../app");
 const app = require("../app");
 const Blog = require("../models/blog");
 const api = supertest(app);
@@ -22,10 +21,7 @@ const initialBlogs = [
 
 beforeEach(async () => {
     await Blog.deleteMany({});
-    let blogObject = new Blog(initialBlogs[0]);
-    await blogObject.save();
-    blogObject = new Blog(initialBlogs[1]);
-    await blogObject.save();
+    await Blog.insertMany(initialBlogs);
 });
 
 describe("test get blogs api", () => {

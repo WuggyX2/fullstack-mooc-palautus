@@ -4,8 +4,16 @@ const uniqueValidator = require("mongoose-unique-validator");
 const userSchema = mongoose.Schema({
     username: { type: String, unique: true },
     name: String,
-    passwordHash: String
+    passwordHash: String,
+    blogs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Blog"
+        }
+    ]
 });
+
+userSchema.plugin(uniqueValidator);
 
 userSchema.set("toJSON", {
     transform: (document, returnedObject) => {
@@ -16,8 +24,6 @@ userSchema.set("toJSON", {
         delete returnedObject.passwordHash;
     }
 });
-
-userSchema.plugin(uniqueValidator);
 
 const User = mongoose.model("User", userSchema);
 
