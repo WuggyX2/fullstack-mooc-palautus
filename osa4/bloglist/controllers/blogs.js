@@ -12,10 +12,11 @@ blogRouter.get("/", async (request, response) => {
 });
 
 blogRouter.post("/", async (request, response) => {
-    const foundUser = await User.findById(request.body.userId);
+    const user = await User.findById(request.user);
+
     const newBlogData = {
         ...request.body,
-        user: foundUser._id
+        user: user._id
     };
 
     const blog = new Blog(newBlogData);
@@ -29,23 +30,25 @@ blogRouter.post("/", async (request, response) => {
     }
 
     const savedBlog = await blog.save();
-    console.log("Tallennettiin blogi");
 
-    foundUser.blogs = foundUser.blogs.concat(savedBlog._id);
-    await foundUser.save();
+    user.blogs = user.blogs.concat(savedBlog._id);
+    await user.save();
 
     response.status(201).json(savedBlog);
 });
 
 blogRouter.delete("/:id", idValidation, async (request, response) => {
-    const result = await Blog.findByIdAndRemove(request.params.id);
-    if (result) {
-        response.status(200).end();
+    const blogToDelete = await Blog.findById(request.params.id);
+
+    if (blogToDelete) {
+        if (blogToDelete.user.toString() === request.user) {
+            await Blog.deleteOne(blogToDelete);
+            response.status(204).end();
+        } else {
+            response.status(401).end();
+        }
     } else {
-        const errorBody = {
-            error: "Blog does not exist"
-        };
-        response.status(400).json(errorBody);
+        response.status(400).json({ error: "Blog does not exist" });
     }
 });
 
