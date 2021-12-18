@@ -1,9 +1,19 @@
-import axios from 'axios'
-const baseUrl = '/api/blogs'
+import axios from "axios";
+const baseUrl = "/api/blogs";
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
-}
+let token = null;
+
+const setToken = (newToken) => {
+    token = `bearer ${newToken}`;
+};
+
+const getAll = async () => {
+    const config = {
+        headers: { Authorization: token },
+    };
+
+    const request = await axios.get(baseUrl, config);
+    return request.data;
+};
 // eslint-disable-next-line
-export default { getAll }
+export default { getAll, setToken };
