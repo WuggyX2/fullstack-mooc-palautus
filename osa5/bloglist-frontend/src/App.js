@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BlogList from "./components/BlogList";
+import CurrentUser from "./components/CurrentUser";
 import LoginForm from "./components/LoginForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -17,12 +18,27 @@ const App = () => {
         }
     }, [user]);
 
+    useEffect(() => {
+        const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+        if (loggedUserJSON) {
+            const user = JSON.parse(loggedUserJSON);
+            setUser(user);
+            blogService.setToken(user.token);
+        }
+    }, []);
+
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
             const response = await loginService.login({ username, password });
             setUsername("");
             setPassword("");
+
+            window.localStorage.setItem(
+                "loggedBlogappUser",
+                JSON.stringify(response)
+            );
+
             setUser(response);
             blogService.setToken(response.token);
         } catch (error) {
@@ -31,6 +47,11 @@ const App = () => {
                 setErrorMessage(null);
             }, 5000);
         }
+    };
+
+    const handleLogout = () => {
+        setUser(null);
+        window.localStorage.removeItem("loggedBlogappUser");
     };
 
     return (
@@ -48,7 +69,10 @@ const App = () => {
                     handleSubmit={handleLogin}
                 />
             ) : (
-                <BlogList blogs={blogs} user={user} />
+                <div>
+                    <CurrentUser user={user} logoutHandler={handleLogout} />
+                    <BlogList blogs={blogs} />
+                </div>
             )}
         </div>
     );
