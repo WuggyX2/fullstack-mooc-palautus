@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import BlogList from "./components/BlogList";
 import CurrentUser from "./components/CurrentUser";
 import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm";
 import Notification from "./components/Notification";
+import Toggleable from "./components/Toggleable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -54,13 +55,12 @@ const App = () => {
         }
     };
 
-    const handleNewBlog = async (event) => {
-        event.preventDefault();
+    const blogFormRef = useRef();
+
+    const handleNewBlog = async (blogData) => {
+        blogFormRef.current.toggleVisibility();
         try {
-            const result = await blogService.createNew({ title, author, url });
-            setAuthor("");
-            setUrl("");
-            setTitle("");
+            const result = await blogService.createNew(blogData);
             setBlogs(blogs.concat(result));
             showMessage({
                 message: `a bew blog ${result.title} by ${result.author} added`,
@@ -104,19 +104,10 @@ const App = () => {
             ) : (
                 <div>
                     <CurrentUser user={user} logoutHandler={handleLogout} />
-                    <NewBlogForm
-                        handleSubmit={handleNewBlog}
-                        url={url}
-                        author={author}
-                        title={title}
-                        handleTitleChange={({ target }) =>
-                            setTitle(target.value)
-                        }
-                        handleAuthorChange={({ target }) =>
-                            setAuthor(target.value)
-                        }
-                        handleUrlChange={({ target }) => setUrl(target.value)}
-                    />
+                    <Toggleable buttonLabel="create new blog" ref={blogFormRef}>
+                        <NewBlogForm createBlog={handleNewBlog} />
+                    </Toggleable>
+
                     <BlogList blogs={blogs} />
                 </div>
             )}
