@@ -13,9 +13,6 @@ const App = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [user, setUser] = useState(null);
-    const [title, setTitle] = useState("");
-    const [author, setAuthor] = useState("");
-    const [url, setUrl] = useState("");
     const [message, setMessage] = useState({ message: null, type: null });
 
     useEffect(() => {
@@ -86,6 +83,46 @@ const App = () => {
         window.localStorage.removeItem("loggedBlogappUser");
     };
 
+    const blogUpvote = async (id, upvotedBlog) => {
+        try {
+            await blogService.update(id, upvotedBlog);
+            setBlogs(
+                blogs.map((blog) => (blog.id !== id ? blog : upvotedBlog))
+            );
+        } catch (error) {
+            showMessage({
+                message: error.response.data.error,
+                type: "error",
+            });
+        }
+    };
+
+    const blogRemove = async (blog) => {
+        if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+            try {
+                await blogService.remove(blog.id);
+                setBlogs(
+                    blogs.filter((b) => {
+                        return b.id !== blog.id;
+                    })
+                );
+
+                showMessage({
+                    message: `Succesfully removed blog ${blog.title}`,
+                    type: "success",
+                });
+            } catch (error) {
+                const message = error.response.data.error
+                    ? error.response.data.error
+                    : "No permissions to remove that blog";
+                showMessage({
+                    message: message,
+                    type: "error",
+                });
+            }
+        }
+    };
+
     return (
         <div>
             <Notification message={message.message} type={message.type} />
@@ -108,7 +145,11 @@ const App = () => {
                         <NewBlogForm createBlog={handleNewBlog} />
                     </Toggleable>
 
-                    <BlogList blogs={blogs} />
+                    <BlogList
+                        blogs={blogs}
+                        removeClick={blogRemove}
+                        likeClick={blogUpvote}
+                    />
                 </div>
             )}
         </div>
