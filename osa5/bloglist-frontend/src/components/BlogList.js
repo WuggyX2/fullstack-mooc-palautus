@@ -1,7 +1,7 @@
 import React from "react";
 import Blog from "./Blog";
 
-const BlogList = ({ blogs, user }) => {
+const BlogList = ({ blogs }) => {
     return (
         <div>
             <h2>Blogs</h2>

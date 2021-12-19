@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import BlogList from "./components/BlogList";
 import CurrentUser from "./components/CurrentUser";
 import LoginForm from "./components/LoginForm";
+import NewBlogForm from "./components/NewBlogForm";
+import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -10,7 +12,10 @@ const App = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [user, setUser] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [title, setTitle] = useState("");
+    const [author, setAuthor] = useState("");
+    const [url, setUrl] = useState("");
+    const [message, setMessage] = useState({ message: null, type: null });
 
     useEffect(() => {
         if (user != null) {
@@ -42,11 +47,38 @@ const App = () => {
             setUser(response);
             blogService.setToken(response.token);
         } catch (error) {
-            setErrorMessage("wrong credentials");
-            setTimeout(() => {
-                setErrorMessage(null);
-            }, 5000);
+            showMessage({
+                message: error.response.data.error,
+                type: "error",
+            });
         }
+    };
+
+    const handleNewBlog = async (event) => {
+        event.preventDefault();
+        try {
+            const result = await blogService.createNew({ title, author, url });
+            setAuthor("");
+            setUrl("");
+            setTitle("");
+            setBlogs(blogs.concat(result));
+            showMessage({
+                message: `a bew blog ${result.title} by ${result.author} added`,
+                type: "success",
+            });
+        } catch (error) {
+            showMessage({
+                message: `Blog creation failder error code: ${error.response.status}`,
+                type: "error",
+            });
+        }
+    };
+
+    const showMessage = (message) => {
+        setMessage(message);
+        setTimeout(() => {
+            setMessage({ message: null, type: null });
+        }, 4000);
     };
 
     const handleLogout = () => {
@@ -56,6 +88,7 @@ const App = () => {
 
     return (
         <div>
+            <Notification message={message.message} type={message.type} />
             {user == null ? (
                 <LoginForm
                     username={username}
@@ -71,6 +104,19 @@ const App = () => {
             ) : (
                 <div>
                     <CurrentUser user={user} logoutHandler={handleLogout} />
+                    <NewBlogForm
+                        handleSubmit={handleNewBlog}
+                        url={url}
+                        author={author}
+                        title={title}
+                        handleTitleChange={({ target }) =>
+                            setTitle(target.value)
+                        }
+                        handleAuthorChange={({ target }) =>
+                            setAuthor(target.value)
+                        }
+                        handleUrlChange={({ target }) => setUrl(target.value)}
+                    />
                     <BlogList blogs={blogs} />
                 </div>
             )}
