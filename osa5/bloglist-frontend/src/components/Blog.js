@@ -28,7 +28,7 @@ const Blog = ({ blog, blogLike, blogRemove }) => {
     };
 
     Blog.propTypes = {
-        blog: PropTypes.string.isRequired,
+        blog: PropTypes.object.isRequired,
         blogLike: PropTypes.func.isRequired,
         blogRemove: PropTypes.func.isRequired,
     };
@@ -45,7 +45,7 @@ const Blog = ({ blog, blogLike, blogRemove }) => {
                     likes {blog.likes}{" "}
                     <button onClick={upvoteBlog}> like</button>
                 </div>
-                <div>{blog.user.name}</div>
+                <div>{blog.user ? blog.user.name : "No user"}</div>
                 <button onClick={removeBlog}> remove</button>
             </div>
         </div>
