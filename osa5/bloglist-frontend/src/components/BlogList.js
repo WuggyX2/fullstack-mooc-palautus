@@ -3,7 +3,6 @@ import Blog from "./Blog";
 const BlogList = ({ blogs, removeClick, likeClick }) => {
     return (
         <div>
-            <h2>Blogs</h2>
             {blogs
                 .sort((a, b) => {
                     if (a.likes > b.likes) return -1;

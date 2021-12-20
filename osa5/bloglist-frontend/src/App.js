@@ -125,23 +125,26 @@ const App = () => {
 
     return (
         <div>
+            <h2>Blogs</h2>
             <Notification message={message.message} type={message.type} />
             {user == null ? (
-                <LoginForm
-                    username={username}
-                    password={password}
-                    handleUsernameChange={({ target }) =>
-                        setUsername(target.value)
-                    }
-                    handlePasswordChange={({ target }) =>
-                        setPassword(target.value)
-                    }
-                    handleSubmit={handleLogin}
-                />
+                <Toggleable buttonLabel="login">
+                    <LoginForm
+                        username={username}
+                        password={password}
+                        handleUsernameChange={({ target }) =>
+                            setUsername(target.value)
+                        }
+                        handlePasswordChange={({ target }) =>
+                            setPassword(target.value)
+                        }
+                        handleSubmit={handleLogin}
+                    />
+                </Toggleable>
             ) : (
                 <div>
                     <CurrentUser user={user} logoutHandler={handleLogout} />
-                    <Toggleable buttonLabel="create new blog" ref={blogFormRef}>
+                    <Toggleable buttonLabel="Create New Blog" ref={blogFormRef}>
                         <NewBlogForm createBlog={handleNewBlog} />
                     </Toggleable>
 
