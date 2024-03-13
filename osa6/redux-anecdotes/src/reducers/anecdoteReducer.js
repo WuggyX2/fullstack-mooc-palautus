@@ -36,8 +36,17 @@ export const createVote = (id) => {
 };
 
 export const selectOrderedAnectodes = (state) => {
-  return state.sort((a, b) => b.votes - a.votes);
+  const filter = state.filter;
+  const filteredAnecdotes = state.anecdotes.filter((anecdote) =>
+    anecdote.content.toLowerCase().includes(filter.toLowerCase()),
+  );
+  return filteredAnecdotes.toSorted((a, b) => b.votes - a.votes);
 };
+
+// const filter = state => state.filter;
+// const anecdotes = state => state.anecdotes;
+//
+// export const selectAnecdotes = 
 
 const initialState = anecdotesAtStart.map(asObject);
 
