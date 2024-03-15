@@ -1,14 +1,5 @@
 import { createSlice, createSelector } from "@reduxjs/toolkit";
 
-const anecdotesAtStart = [
-  "If it hurts, do it more often",
-  "Adding manpower to a late software project makes it later!",
-  "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-  "Premature optimization is the root of all evil.",
-  "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
-];
-
 const getId = () => (100000 * Math.random()).toFixed(0);
 
 const asObject = (anecdote) => {
@@ -19,12 +10,12 @@ const asObject = (anecdote) => {
   };
 };
 
+const initialState = [];
 
-const initialState = anecdotesAtStart.map(asObject);
 
 const anecdoteSlice = createSlice({
   name: "anecdotes",
-  initialState,
+  initialState: initialState,
   reducers: {
     vote: (state, action) => {
       return state.map((anecdote) =>
@@ -36,27 +27,30 @@ const anecdoteSlice = createSlice({
     newAnecdote: (state, action) => {
       return state.concat(asObject(action.payload));
     },
+    setAnecdotes: (state, action) => {
+      return action.payload;
+    },
   },
 });
 
-const filter = state => state.filter;
-const anecdotes = state => state.anecdotes;
+const filter = (state) => state.filter;
+const anecdotes = (state) => state.anecdotes;
 
 const selectFilteredAnecdotes = createSelector(
   [filter, anecdotes],
   (filter, anecdotes) => {
-    return anecdotes.filter(anecdote =>
-      anecdote.content.toLowerCase().includes(filter.toLowerCase())
+    return anecdotes?.filter((anecdote) =>
+      anecdote.content.toLowerCase().includes(filter.toLowerCase()),
     );
-  }
+  },
 );
 
 export const selectOrderedFilteredAnecdotes = createSelector(
   [selectFilteredAnecdotes],
   (filteredAnecdotes) => {
     return filteredAnecdotes.sort((a, b) => b.votes - a.votes);
-  }
+  },
 );
 
-export const { vote, newAnecdote } = anecdoteSlice.actions;
+export const { vote, newAnecdote, setAnecdotes } = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;
