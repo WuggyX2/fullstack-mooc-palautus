@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from "@reduxjs/toolkit";
 
 const anecdotesAtStart = [
   "If it hurts, do it more often",
@@ -19,18 +19,6 @@ const asObject = (anecdote) => {
   };
 };
 
-export const selectOrderedAnectodes = (state) => {
-  const filter = state.filter;
-  const filteredAnecdotes = state.anecdotes.filter((anecdote) =>
-    anecdote.content.toLowerCase().includes(filter.toLowerCase()),
-  );
-  return filteredAnecdotes.toSorted((a, b) => b.votes - a.votes);
-};
-
-// const filter = state => state.filter;
-// const anecdotes = state => state.anecdotes;
-//
-// export const selectAnecdotes =
 
 const initialState = anecdotesAtStart.map(asObject);
 
@@ -50,6 +38,25 @@ const anecdoteSlice = createSlice({
     },
   },
 });
+
+const filter = state => state.filter;
+const anecdotes = state => state.anecdotes;
+
+const selectFilteredAnecdotes = createSelector(
+  [filter, anecdotes],
+  (filter, anecdotes) => {
+    return anecdotes.filter(anecdote =>
+      anecdote.content.toLowerCase().includes(filter.toLowerCase())
+    );
+  }
+);
+
+export const selectOrderedFilteredAnecdotes = createSelector(
+  [selectFilteredAnecdotes],
+  (filteredAnecdotes) => {
+    return filteredAnecdotes.sort((a, b) => b.votes - a.votes);
+  }
+);
 
 export const { vote, newAnecdote } = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;

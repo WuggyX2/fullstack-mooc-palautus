@@ -9,8 +9,13 @@ const Filter = () => {
     dispatch(setFilter(filter));
   };
 
+  const style = {
+    marginBottom: 10,
+    marginTop: 10,
+  };
+
   return (
-    <div style={{ marginBottom: 10 }}>
+    <div style={style}>
       filter <input type="text" onChange={handleChange} />
     </div>
   );
