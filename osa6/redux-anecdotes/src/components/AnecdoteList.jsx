@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   vote,
   selectOrderedFilteredAnecdotes,
-  setAnecdotes,
+  initializeAnecdotes,
+  voteAnecdote,
 } from "../reducers/anecdoteReducer";
 import useNotifications from "../hooks/notificationsHook";
-import { getAll } from "../services/anecdotesService";
 
 const AnecdoteList = () => {
   const anecdotes = useSelector(selectOrderedFilteredAnecdotes);
@@ -14,7 +14,7 @@ const AnecdoteList = () => {
   const setNotificaton = useNotifications();
 
   const handleVote = (id) => {
-    dispatch(vote(id));
+    dispatch(voteAnecdote(id));
     const anecdoteText = anecdotes.find(
       (anecdote) => anecdote.id === id,
     ).content;
@@ -23,9 +23,7 @@ const AnecdoteList = () => {
   };
 
   useEffect(() => {
-    getAll().then((anecdotes) => {
-      dispatch(setAnecdotes(anecdotes));
-    });
+    dispatch(initializeAnecdotes())
   }, []);
 
   if (anecdotes.length === 0) {
