@@ -39,7 +39,6 @@ export const createAnecdote = (content) => {
 
 export const voteAnecdote = (id) => {
   return async (dispatch) => {
-    console.log("voteAnecdote", id);
     await addVote(id);
     dispatch(vote(id));
   };

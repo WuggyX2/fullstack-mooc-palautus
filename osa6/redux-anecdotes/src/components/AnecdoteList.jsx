@@ -1,25 +1,22 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  vote,
   selectOrderedFilteredAnecdotes,
   initializeAnecdotes,
   voteAnecdote,
 } from "../reducers/anecdoteReducer";
-import useNotifications from "../hooks/notificationsHook";
+import { setNotification } from "../reducers/notificationsReducer";
 
 const AnecdoteList = () => {
   const anecdotes = useSelector(selectOrderedFilteredAnecdotes);
   const dispatch = useDispatch();
-  const setNotificaton = useNotifications();
 
   const handleVote = (id) => {
     dispatch(voteAnecdote(id));
     const anecdoteText = anecdotes.find(
       (anecdote) => anecdote.id === id,
     ).content;
-
-    setNotificaton(`You voted for '${anecdoteText}'`);
+    dispatch(setNotification(`You voted for '${anecdoteText}'`, 5))
   };
 
   useEffect(() => {
